@@ -11,9 +11,15 @@
     ];
 
   # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  boot.kernelPackages = pkgs.linuxPackages_6_17;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  zramSwap = {
+    enable = true;
+    memoryMax = 4 * 1024 * 1024 * 1024; # 4Gig
+  };
+
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -73,7 +79,7 @@
   };
 
   # Enable flakes and the new command line tool
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  #nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Auto login to TTY, if end up changing to use a display manager
   # gdm/sddm/lightdm/greetd can probably remove this.
@@ -83,7 +89,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   wget
-  git
   kitty
   waybar
   rofi-wayland
@@ -92,11 +97,20 @@
   firefox
   nautilus
   stow # GNU Stow for managing dotfiles
+  obsidian
   ];
 
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+  };
+
+  programs.git = {
+    enable = true;
+    config = {
+      user.name = "Tristan North";
+      user.email = "git@tristan-north.com";
+    };
   };
 
   hardware.graphics.enable = true;

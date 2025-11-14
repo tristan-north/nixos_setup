@@ -119,7 +119,7 @@
   programs.hyprland.withUWSM = true;
 
   # Hint electron apps to use wayland
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.variables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
   fonts.packages = with pkgs; [
     roboto

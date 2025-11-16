@@ -101,7 +101,7 @@ in
   environment.systemPackages = with pkgs; [
   wget
   btop
-  kitty
+  alacritty
   # waybar
   # rofi-wayland
   # walker

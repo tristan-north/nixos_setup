@@ -4,6 +4,11 @@
 
 { config, pkgs, ... }:
 
+# Make unstable packages available as `pkgs.unstable`
+let
+  unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz")
+  { config = config.nixpkgs.config;};
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -26,6 +31,10 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  hardware.bluetooth.enable = true;
+
+  services.upower.enable = true; # Battery features
 
   # Set your time zone.
   time.timeZone = "Australia/Sydney";
@@ -62,6 +71,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  hardware.graphics.enable = true;
+
   #### tnorth additions
 
   # For running in vmware
@@ -79,7 +90,7 @@
   };
 
   # Enable flakes and the new command line tool
-  #nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = ["nix-command"];
 
   # Auto login to TTY, if end up changing to use a display manager
   # gdm/sddm/lightdm/greetd can probably remove this.
@@ -89,15 +100,21 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   wget
+  btop
   kitty
-  waybar
-  rofi-wayland
+  # waybar
+  # rofi-wayland
+  # walker
   vscode.fhs # FHS for compatibility with extensions with binaries.
   brave
   firefox
   nautilus
   stow # GNU Stow for managing dotfiles
   obsidian
+  # unstable.wiremix # Volume mixer
+  # mako # Notifications
+  unstable.quickshell
+  brightnessctl # Monitor brightness controller
   ];
 
   programs.neovim = {
@@ -113,16 +130,17 @@
     };
   };
 
-  hardware.graphics.enable = true;
+  # programs.hyprland.enable = true;
+  # programs.hyprland.withUWSM = true;
 
-  programs.hyprland.enable = true;
-  programs.hyprland.withUWSM = true;
+  programs.niri.enable = true;
 
   # Hint electron apps to use wayland
   environment.variables.ELECTRON_OZONE_PLATFORM_HINT = "wayland";
 
   fonts.packages = with pkgs; [
     roboto
+    inter
     jetbrains-mono
     fira-code
     font-awesome # For waybar

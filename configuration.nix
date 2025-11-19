@@ -39,31 +39,12 @@ in
   services.flatpak.enable = true;
   xdg.portal = {
     enable = true;
-    # xdgOpenUsePortal = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
     config.common.default = ["gnome" "gtk"];
-      # This is the critical part:
-    # config = {
-    #   niri = {
-    #     default = [ "gnome" "gtk" ];           # for most interfaces
-    #     "org.freedesktop.impl.portal.FileChooser" = [ "gtk" "gnome" ];
-    #     "org.freedesktop.impl.portal.AppChooser"  = [ "gnome" "gtk" ];
-    #     "org.freedesktop.impl.portal.OpenFile"    = [ "gnome" "gtk" ];  # <-- this handles URLs
-    #   };
-    # };
   };
 
   # System wide dark mode
   environment.variables.GTK_THEME = "Adwaita-dark";
-  # programs.dconf.enable = true;
-  # programs.dconf.enable = true; # Gnome settings
-  # dconf.settings = {
-  #   "org/gnome/desktop/interface" = {
-  #     color-scheme = "prefer-dark";
-  #     # Optional: Force dark GTK theme
-  #     # gtk-theme = "Adwaita-dark";
-  #   };
-  # };
 
   # Set your time zone.
   time.timeZone = "Australia/Sydney";
@@ -103,8 +84,6 @@ in
 
   hardware.graphics.enable = true;
 
-  #### tnorth additions
-
   # For running in vmware
   #virtualisation.vmware.guest.enable = true;
  # environment.sessionVariables = {
@@ -135,16 +114,10 @@ in
   gcc15
   wl-clipboard-rs # For nvim
   ripgrep # For nvim
-  # waybar
-  # rofi-wayland
-  # walker
   gnome-software # Flatpak installer
   vscode.fhs # FHS for compatibility with extensions with binaries.
   nautilus
   stow # GNU Stow for managing dotfiles
-  # obsidian
-  # unstable.wiremix # Volume mixer
-  # mako # Notifications. Not needed with quickshell, eg noctalia
   unstable.quickshell
   brightnessctl # Monitor brightness controller
   wlsunset # Nightlight
@@ -158,19 +131,6 @@ in
   programs.neovim = {
     enable = true;
     defaultEditor = true;
-
-    # Install treesitter through nix
-    # configure = {
-    #   packages.myPlugins = with pkgs.vimPlugins; {
-    #     start = [
-    #       # Option A: Install ALL grammars (easiest, heavier)
-    #       nvim-treesitter.withAllGrammars
-    #
-    #       # Option B: Install specific grammars (lighter)
-    #       # (nvim-treesitter.withPlugins (p: [ p.c p.lua p.nix p.python p.rust ]))
-    #     ];
-    #   };
-    # };
   };
 
   programs.git = {
@@ -180,9 +140,6 @@ in
       user.email = "git@tristan-north.com";
     };
   };
-
-  # programs.hyprland.enable = true;
-  # programs.hyprland.withUWSM = true;
 
   programs.niri.enable = true;
 
@@ -198,8 +155,6 @@ in
     nerd-fonts.fira-code
   ];
   
-
-  ####
 
 
   # Some programs need SUID wrappers, can be configured further or are

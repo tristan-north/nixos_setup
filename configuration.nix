@@ -27,14 +27,43 @@ in
 
 
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
   networking.networkmanager.enable = true;
 
   hardware.bluetooth.enable = true;
 
-  services.upower.enable = true; # Battery features
+  services.upower.enable = true; # Battery features, needed by quickshell
+
+  # Flatpak setup
+  services.flatpak.enable = true;
+  xdg.portal = {
+    enable = true;
+    # xdgOpenUsePortal = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = ["gnome" "gtk"];
+      # This is the critical part:
+    # config = {
+    #   niri = {
+    #     default = [ "gnome" "gtk" ];           # for most interfaces
+    #     "org.freedesktop.impl.portal.FileChooser" = [ "gtk" "gnome" ];
+    #     "org.freedesktop.impl.portal.AppChooser"  = [ "gnome" "gtk" ];
+    #     "org.freedesktop.impl.portal.OpenFile"    = [ "gnome" "gtk" ];  # <-- this handles URLs
+    #   };
+    # };
+  };
+
+  # System wide dark mode
+  environment.variables.GTK_THEME = "Adwaita-dark";
+  # programs.dconf.enable = true;
+  # programs.dconf.enable = true; # Gnome settings
+  # dconf.settings = {
+  #   "org/gnome/desktop/interface" = {
+  #     color-scheme = "prefer-dark";
+  #     # Optional: Force dark GTK theme
+  #     # gtk-theme = "Adwaita-dark";
+  #   };
+  # };
 
   # Set your time zone.
   time.timeZone = "Australia/Sydney";
@@ -58,6 +87,7 @@ in
   services.xserver.xkb = {
     layout = "au";
     variant = "";
+    options = "caps:escape";
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -76,18 +106,18 @@ in
   #### tnorth additions
 
   # For running in vmware
-  virtualisation.vmware.guest.enable = true;
-  environment.sessionVariables = {
-    WLR_RENDERER = "pixman";
-    WLR_RENDERER_ALLOW_SOFTWARE = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
+  #virtualisation.vmware.guest.enable = true;
+ # environment.sessionVariables = {
+ #   WLR_RENDERER = "pixman";
+ #   WLR_RENDERER_ALLOW_SOFTWARE = "1";
+#    WLR_NO_HARDWARE_CURSORS = "1";
 
-    LIBGL_ALWAYS_SOFTWARE = "1";
+#    LIBGL_ALWAYS_SOFTWARE = "1";
     # MESA_LOADER_DRIVER_OVERRIDE = "llvmpipe";
     # GALLIUM_DRIVER = "llvmpipe";
 
     # WLR_DRM_NO_ATOMIC = "1";
-  };
+#  };
 
   # Enable flakes and the new command line tool
   nix.settings.experimental-features = ["nix-command"];
@@ -102,24 +132,45 @@ in
   wget
   btop
   alacritty
+  gcc15
+  wl-clipboard-rs # For nvim
+  ripgrep # For nvim
   # waybar
   # rofi-wayland
   # walker
+  gnome-software # Flatpak installer
   vscode.fhs # FHS for compatibility with extensions with binaries.
-  brave
-  firefox
   nautilus
   stow # GNU Stow for managing dotfiles
-  obsidian
+  # obsidian
   # unstable.wiremix # Volume mixer
-  # mako # Notifications
+  # mako # Notifications. Not needed with quickshell, eg noctalia
   unstable.quickshell
   brightnessctl # Monitor brightness controller
+  wlsunset # Nightlight
+  gnome-themes-extra   # provides Adwaita-dark
+  unstable.flutter
+
+  # Neovim stuff
+  tree-sitter
   ];
 
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+
+    # Install treesitter through nix
+    # configure = {
+    #   packages.myPlugins = with pkgs.vimPlugins; {
+    #     start = [
+    #       # Option A: Install ALL grammars (easiest, heavier)
+    #       nvim-treesitter.withAllGrammars
+    #
+    #       # Option B: Install specific grammars (lighter)
+    #       # (nvim-treesitter.withPlugins (p: [ p.c p.lua p.nix p.python p.rust ]))
+    #     ];
+    #   };
+    # };
   };
 
   programs.git = {
